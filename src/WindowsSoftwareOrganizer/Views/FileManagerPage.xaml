@@ -105,6 +105,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <!-- Navigation Buttons -->
@@ -150,8 +151,21 @@
                             QuerySubmitted="SearchBox_QuerySubmitted"
                             Width="200" />
 
+            <!-- AI 智能整理按钮 - 独立显眼入口 -->
+            <Button Grid.Column="6" 
+                    Click="AIOrganize_Click"
+                    ToolTipService.ToolTip="AI 智能整理"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Margin="8,0,0,0"
+                    Padding="12,8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE945;" FontSize="14" />
+                    <TextBlock Text="AI 整理" />
+                </StackPanel>
+            </Button>
+
             <!-- More Actions -->
-            <DropDownButton Grid.Column="6" Margin="8,0,0,0">
+            <DropDownButton Grid.Column="7" Margin="8,0,0,0">
                 <FontIcon Glyph="&#xE712;" FontSize="16" />
                 <DropDownButton.Flyout>
                     <MenuFlyout>
@@ -163,11 +177,6 @@
                         <MenuFlyoutItem Text="类型统计" Command="{x:Bind ViewModel.AnalyzeTypesCommand}">
                             <MenuFlyoutItem.Icon>
                                 <FontIcon Glyph="&#xE8FD;" />
-                            </MenuFlyoutItem.Icon>
-                        </MenuFlyoutItem>
-                        <MenuFlyoutItem Text="AI 智能整理" Command="{x:Bind ViewModel.AnalyzeWithAICommand}">
-                            <MenuFlyoutItem.Icon>
-                                <FontIcon Glyph="&#xE945;" />
                             </MenuFlyoutItem.Icon>
                         </MenuFlyoutItem>
                         <MenuFlyoutSeparator />

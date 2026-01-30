@@ -113,10 +113,13 @@ public record ChatMessage
     public required string Role { get; init; }
 
     [JsonPropertyName("content")]
-    public required string Content { get; init; }
+    public required string? Content { get; init; }
 
     [JsonPropertyName("name")]
     public string? Name { get; init; }
+
+    [JsonPropertyName("tool_call_id")]
+    public string? ToolCallId { get; init; }
 
     /// <summary>
     /// 创建系统消息。
@@ -132,6 +135,17 @@ public record ChatMessage
     /// 创建助手消息。
     /// </summary>
     public static ChatMessage Assistant(string content) => new() { Role = "assistant", Content = content };
+
+    /// <summary>
+    /// 创建工具结果消息。
+    /// </summary>
+    public static ChatMessage Tool(string toolCallId, string name, string content) => new() 
+    { 
+        Role = "tool", 
+        Content = content, 
+        Name = name,
+        ToolCallId = toolCallId 
+    };
 }
 
 /// <summary>

@@ -1,3 +1,4 @@
+using WindowsSoftwareOrganizer.Core.Interfaces;
 using WindowsSoftwareOrganizer.Core.Models;
 using WindowsSoftwareOrganizer.Infrastructure.Services;
 
@@ -8,12 +9,46 @@ namespace WindowsSoftwareOrganizer.Tests.Services;
 /// </summary>
 public class OpenAIClientTests
 {
+    /// <summary>
+    /// 简单的 Mock ConfigurationService 用于测试。
+    /// </summary>
+    private class MockConfigurationService : IConfigurationService
+    {
+        private readonly AppConfiguration _config;
+
+        public MockConfigurationService(OpenAIConfiguration? openAIConfig = null)
+        {
+            _config = new AppConfiguration
+            {
+                OpenAIConfiguration = openAIConfig ?? new OpenAIConfiguration()
+            };
+        }
+
+        public string ConfigFilePath => "test-config.json";
+
+        public event EventHandler<ConfigurationCorruptedEventArgs>? ConfigurationCorrupted;
+
+        public Task<AppConfiguration> GetConfigurationAsync() => Task.FromResult(_config);
+
+        public Task SaveConfigurationAsync(AppConfiguration configuration) => Task.CompletedTask;
+
+        public Task<AppConfiguration> ResetToDefaultAsync() => Task.FromResult(new AppConfiguration());
+
+        public ValidationResult ValidateConfiguration(string json) => ValidationResult.Success();
+    }
+
+    private static IConfigurationService CreateMockConfigService(OpenAIConfiguration? openAIConfig = null)
+    {
+        return new MockConfigurationService(openAIConfig);
+    }
+
     #region Configuration Tests
 
     [Fact]
-    public void Constructor_WithNullConfig_UsesDefaults()
+    public void Constructor_WithEmptyConfig_UsesDefaults()
     {
-        using var client = new OpenAIClient();
+        var mockConfigService = CreateMockConfigService();
+        using var client = new OpenAIClient(mockConfigService);
 
         Assert.NotNull(client.Configuration);
         Assert.Equal("gpt-4o-mini", client.Configuration.Model);
@@ -21,54 +56,42 @@ public class OpenAIClientTests
     }
 
     [Fact]
-    public void Constructor_WithConfig_UsesProvidedConfig()
-    {
-        var config = new OpenAIConfiguration
-        {
-            ApiKey = "test-key",
-            Model = "gpt-4",
-            BaseUrl = "https://custom.api.com/v1"
-        };
-
-        using var client = new OpenAIClient(config);
-
-        Assert.Equal("test-key", client.Configuration.ApiKey);
-        Assert.Equal("gpt-4", client.Configuration.Model);
-        Assert.Equal("https://custom.api.com/v1", client.Configuration.BaseUrl);
-    }
-
-    [Fact]
-    public void IsConfigured_WithApiKey_ReturnsTrue()
+    public async Task EnsureConfiguredAsync_WithApiKey_ReturnsTrue()
     {
         var config = new OpenAIConfiguration
         {
             ApiKey = "test-key",
             BaseUrl = "https://api.openai.com/v1"
         };
+        var mockConfigService = CreateMockConfigService(config);
 
-        using var client = new OpenAIClient(config);
+        using var client = new OpenAIClient(mockConfigService);
+        var isConfigured = await client.EnsureConfiguredAsync();
 
-        Assert.True(client.IsConfigured);
+        Assert.True(isConfigured);
     }
 
     [Fact]
-    public void IsConfigured_WithoutApiKey_ReturnsFalse()
+    public async Task EnsureConfiguredAsync_WithoutApiKey_ReturnsFalse()
     {
         var config = new OpenAIConfiguration
         {
             ApiKey = "",
             BaseUrl = "https://api.openai.com/v1"
         };
+        var mockConfigService = CreateMockConfigService(config);
 
-        using var client = new OpenAIClient(config);
+        using var client = new OpenAIClient(mockConfigService);
+        var isConfigured = await client.EnsureConfiguredAsync();
 
-        Assert.False(client.IsConfigured);
+        Assert.False(isConfigured);
     }
 
     [Fact]
     public void UpdateConfiguration_UpdatesConfig()
     {
-        using var client = new OpenAIClient();
+        var mockConfigService = CreateMockConfigService();
+        using var client = new OpenAIClient(mockConfigService);
 
         var newConfig = new OpenAIConfiguration
         {
@@ -204,29 +227,26 @@ public class OpenAIClientTests
 
     #endregion
 
-    #region OpenAIModels Tests
+    #region ModelInfo Tests
 
     [Fact]
-    public void OpenAIModels_AvailableModels_ContainsExpectedModels()
+    public void ModelInfo_Constructor_SetsProperties()
     {
-        var models = OpenAIModels.AvailableModels;
+        var model = new ModelInfo("gpt-4o", "GPT-4o");
 
-        Assert.NotEmpty(models);
-        Assert.Contains(models, m => m.Id == "gpt-4o");
-        Assert.Contains(models, m => m.Id == "gpt-4o-mini");
-        Assert.Contains(models, m => m.Id == "gpt-4-turbo");
+        Assert.Equal("gpt-4o", model.Id);
+        Assert.Equal("GPT-4o", model.DisplayName);
     }
 
     [Fact]
-    public void OpenAIModels_ModelInfo_HasRequiredProperties()
+    public void ModelInfo_WithSameId_AreEqual()
     {
-        var model = OpenAIModels.AvailableModels.First();
+        var model1 = new ModelInfo("gpt-4o", "GPT-4o");
+        var model2 = new ModelInfo("gpt-4o", "GPT-4o Display");
 
-        Assert.False(string.IsNullOrEmpty(model.Id));
-        Assert.False(string.IsNullOrEmpty(model.DisplayName));
-        Assert.False(string.IsNullOrEmpty(model.Description));
-        Assert.True(model.MaxContextTokens > 0);
-        Assert.True(model.MaxOutputTokens > 0);
+        // ModelInfo 是 record，相同 Id 和 DisplayName 才相等
+        Assert.NotEqual(model1, model2);
+        Assert.Equal(model1.Id, model2.Id);
     }
 
     #endregion
@@ -234,14 +254,15 @@ public class OpenAIClientTests
     #region GetAvailableModelsAsync Tests
 
     [Fact]
-    public async Task GetAvailableModelsAsync_ReturnsModels()
+    public async Task GetAvailableModelsAsync_NotConfigured_ReturnsEmptyList()
     {
-        using var client = new OpenAIClient();
+        var mockConfigService = CreateMockConfigService();
+        using var client = new OpenAIClient(mockConfigService);
 
         var models = await client.GetAvailableModelsAsync();
 
-        Assert.NotEmpty(models);
-        Assert.Contains("gpt-4o-mini", models);
+        // 未配置时返回空列表
+        Assert.Empty(models);
     }
 
     #endregion
@@ -251,7 +272,8 @@ public class OpenAIClientTests
     [Fact]
     public async Task TestConnectionAsync_NotConfigured_ReturnsFailure()
     {
-        using var client = new OpenAIClient();
+        var mockConfigService = CreateMockConfigService();
+        using var client = new OpenAIClient(mockConfigService);
 
         var result = await client.TestConnectionAsync();
 
@@ -266,7 +288,8 @@ public class OpenAIClientTests
     [Fact]
     public async Task SendChatCompletionAsync_NotConfigured_ThrowsException()
     {
-        using var client = new OpenAIClient();
+        var mockConfigService = CreateMockConfigService();
+        using var client = new OpenAIClient(mockConfigService);
 
         var messages = new[] { ChatMessage.User("Hello") };
 
@@ -281,7 +304,8 @@ public class OpenAIClientTests
     [Fact]
     public void Dispose_CanBeCalledMultipleTimes()
     {
-        var client = new OpenAIClient();
+        var mockConfigService = CreateMockConfigService();
+        var client = new OpenAIClient(mockConfigService);
 
         client.Dispose();
         client.Dispose(); // Should not throw

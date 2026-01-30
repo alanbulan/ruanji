@@ -57,6 +57,12 @@ public static class ServiceCollectionExtensions
         // AI 文件分析器 (transient - 无状态)
         services.AddTransient<IAIFileAnalyzer, AIFileAnalyzer>();
 
+        // 文件操作 Agent (transient - 无状态)
+        services.AddTransient<IFileAgent, FileAgent>();
+
+        // AI 助手 (transient - 统一的 AI 功能入口)
+        services.AddTransient<IAIAssistant, AIAssistant>();
+
         return services;
     }
 }

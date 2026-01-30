@@ -77,6 +77,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _modelsLoadStatus = string.Empty;
 
+    // 标记是否有未保存的更改
+    private bool _hasUnsavedChanges;
+    private bool _isInitializing = true;
+
     public IReadOnlyList<LinkType> LinkTypes { get; } = Enum.GetValues<LinkType>();
 
     public IReadOnlyList<ElementTheme> Themes { get; } = new[]
@@ -139,14 +143,47 @@ public partial class SettingsViewModel : ObservableObject
             await LoadOperationHistoryAsync();
 
             StatusMessage = "设置已加载";
+            _isInitializing = false;
         }
         catch (Exception ex)
         {
             StatusMessage = $"加载设置失败: {ex.Message}";
+            _isInitializing = false;
         }
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    /// <summary>
+    /// 属性变更时标记有未保存的更改。
+    /// </summary>
+    partial void OnDefaultTargetPathChanged(string value) => MarkAsChanged();
+    partial void OnPreferredLinkTypeChanged(LinkType value) => MarkAsChanged();
+    partial void OnAutoUpdateRegistryChanged(bool value) => MarkAsChanged();
+    partial void OnOpenAIApiKeyChanged(string value) => MarkAsChanged();
+    partial void OnOpenAIBaseUrlChanged(string value) => MarkAsChanged();
+    partial void OnOpenAIModelChanged(string value) => MarkAsChanged();
+    partial void OnOpenAIEnabledChanged(bool value) => MarkAsChanged();
+    partial void OnSelectedTemplateChanged(NamingTemplate? value) => MarkAsChanged();
+
+    private void MarkAsChanged()
+    {
+        if (!_isInitializing)
+        {
+            _hasUnsavedChanges = true;
+        }
+    }
+
+    /// <summary>
+    /// 页面离开时自动保存设置。
+    /// </summary>
+    public async Task SaveIfChangedAsync()
+    {
+        if (_hasUnsavedChanges && !_isInitializing)
+        {
+            await SaveSettingsAsync();
         }
     }
 
@@ -192,6 +229,7 @@ public partial class SettingsViewModel : ObservableObject
             // Update OpenAI client configuration
             _openAIClient.Configure(config.OpenAIConfiguration);
             
+            _hasUnsavedChanges = false;
             StatusMessage = "设置已保存";
         }
         catch (Exception ex)

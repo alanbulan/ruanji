@@ -75,6 +75,12 @@ public interface IOpenAIClient
     bool IsConfigured { get; }
 
     /// <summary>
+    /// 确保配置已从存储加载（异步初始化）。
+    /// </summary>
+    /// <returns>配置是否有效</returns>
+    Task<bool> EnsureConfiguredAsync();
+
+    /// <summary>
     /// 获取可用的模型列表（从 API 动态获取）。
     /// </summary>
     /// <param name="cancellationToken">取消令牌</param>

@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using WindowsSoftwareOrganizer.Core.Models;
 using WindowsSoftwareOrganizer.ViewModels;
 
@@ -19,6 +20,13 @@ public sealed partial class SettingsPage : Page
         
         // Set initial selections based on ViewModel
         SetInitialSelections();
+    }
+
+    protected override async void OnNavigatingFrom(NavigatingCancelEventArgs e)
+    {
+        base.OnNavigatingFrom(e);
+        // 页面离开时自动保存设置
+        await ViewModel.SaveIfChangedAsync();
     }
 
     private void SetInitialSelections()

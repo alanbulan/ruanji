@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using WindowsSoftwareOrganizer.Core.Interfaces;
 using WindowsSoftwareOrganizer.Core.Models;
 using WindowsSoftwareOrganizer.ViewModels;
 using WindowsSoftwareOrganizer.Views.Dialogs;
@@ -13,10 +14,13 @@ namespace WindowsSoftwareOrganizer.Views;
 public sealed partial class FileManagerPage : Page
 {
     public FileManagerViewModel ViewModel { get; }
+    private readonly IAIAssistant _aiAssistant;
 
     public FileManagerPage()
     {
         ViewModel = App.Current.GetService<FileManagerViewModel>();
+        _aiAssistant = App.Current.GetService<IAIAssistant>();
+        
         this.InitializeComponent();
         this.Loaded += FileManagerPage_Loaded;
         
@@ -41,10 +45,7 @@ public sealed partial class FileManagerPage : Page
         {
             await ShowSizeAnalysisDialogAsync();
         }
-        else if (e.PropertyName == nameof(ViewModel.AiAnalysisResult) && ViewModel.AiAnalysisResult != null)
-        {
-            await ShowAIAnalysisDialogAsync();
-        }
+        // AI 分析现在使用交互式对话框，不再监听 AiAnalysisResult
     }
 
     private async Task ShowTypeStatisticsDialogAsync()
@@ -80,30 +81,6 @@ public sealed partial class FileManagerPage : Page
         catch (Exception ex)
         {
             ViewModel.StatusMessage = $"显示大小分析对话框失败: {ex.Message}";
-        }
-    }
-
-    private async Task ShowAIAnalysisDialogAsync()
-    {
-        if (ViewModel.AiAnalysisResult == null) return;
-        
-        try
-        {
-            var dialog = new AIAnalysisDialog(ViewModel.AiAnalysisResult)
-            {
-                XamlRoot = this.XamlRoot
-            };
-            var result = await dialog.ShowAsync();
-            
-            // 如果用户点击应用建议
-            if (result == ContentDialogResult.Primary)
-            {
-                await ViewModel.ApplyAISuggestionsCommand.ExecuteAsync(null);
-            }
-        }
-        catch (Exception ex)
-        {
-            ViewModel.StatusMessage = $"显示 AI 分析对话框失败: {ex.Message}";
         }
     }
 
@@ -325,6 +302,46 @@ public sealed partial class FileManagerPage : Page
         {
             await ViewModel.CreateFolderCommand.ExecuteAsync(textBox.Text);
         }
+    }
+
+    private async void AIOrganize_Click(object sender, RoutedEventArgs e)
+    {
+        // 异步确保配置已加载
+        var isConfigured = await _aiAssistant.EnsureConfiguredAsync();
+        
+        if (!isConfigured)
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "AI 未配置",
+                Content = "请先在设置页面配置 AI API 密钥。",
+                CloseButtonText = "确定",
+                XamlRoot = this.XamlRoot
+            };
+            await dialog.ShowAsync();
+            return;
+        }
+
+        if (string.IsNullOrEmpty(ViewModel.CurrentPath))
+        {
+            ViewModel.StatusMessage = "请先选择一个目录";
+            return;
+        }
+
+        // 使用独立窗口
+        var context = new AIAssistantContext
+        {
+            Module = AIModule.FileManager,
+            CurrentPath = ViewModel.CurrentPath
+        };
+
+        var aiWindow = new AIAssistantWindow(_aiAssistant, context);
+        aiWindow.Closed += async (s, args) =>
+        {
+            // 窗口关闭后刷新目录
+            await ViewModel.RefreshCommand.ExecuteAsync(null);
+        };
+        aiWindow.Activate();
     }
 
     #endregion

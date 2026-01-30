@@ -42,6 +42,19 @@
                     <TextBlock Text="清空列表" />
                 </StackPanel>
             </Button>
+            
+            <!-- AI 助手按钮 -->
+            <Button x:Name="AIAssistantButton"
+                    Click="AIAssistant_Click"
+                    ToolTipService.ToolTip="AI 智能迁移"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Margin="8,0,0,0"
+                    Padding="12,8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE99A;" FontSize="14" />
+                    <TextBlock Text="AI 迁移" />
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <!-- Main Content -->

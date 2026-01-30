@@ -30,6 +30,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <Button Command="{x:Bind ViewModel.ScanCommand}" 
@@ -67,6 +68,20 @@
                            Style="{StaticResource BodyStrongTextBlockStyle}"
                            VerticalAlignment="Center" />
             </StackPanel>
+
+            <!-- AI 助手按钮 -->
+            <Button x:Name="AIAssistantButton"
+                    Grid.Column="6"
+                    Click="AIAssistant_Click"
+                    ToolTipService.ToolTip="AI 智能清理"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Margin="16,0,0,0"
+                    Padding="12,8">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE99A;" FontSize="14" />
+                    <TextBlock Text="AI 清理" />
+                </StackPanel>
+            </Button>
         </Grid>
 
         <Grid Grid.Row="2">
