@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="WindowsSoftwareOrganizer.Views.Dialogs.AIAnalysisDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WindowsSoftwareOrganizer.Views.Dialogs"
+    xmlns:models="using:WindowsSoftwareOrganizer.Core.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="AI 智能整理建议"
+    PrimaryButtonText="应用选中"
+    SecondaryButtonText="取消"
+    DefaultButton="Primary"
+    MinWidth="700"
+    MinHeight="500">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Summary -->
+        <TextBlock Text="{x:Bind Result.Summary, Mode=OneWay}" 
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,16"
+                   Opacity="0.8" />
+
+        <!-- Selection Controls -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
+            <Button Content="全选" Click="SelectAll_Click" />
+            <Button Content="取消全选" Click="DeselectAll_Click" />
+            <TextBlock VerticalAlignment="Center" Margin="16,0,0,0" Opacity="0.7">
+                <Run Text="已选择 " />
+                <Run Text="{x:Bind SelectedCount, Mode=OneWay}" />
+                <Run Text=" / " />
+                <Run Text="{x:Bind Suggestions.Count, Mode=OneWay}" />
+                <Run Text=" 条建议" />
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Suggestions List -->
+        <ListView Grid.Row="2"
+                  x:Name="SuggestionsListView"
+                  ItemsSource="{x:Bind Suggestions, Mode=OneWay}"
+                  SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:OrganizationSuggestion">
+                    <Grid Padding="8,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox IsChecked="{x:Bind IsSelected, Mode=OneWay}"
+                                  Margin="0,0,12,0"
+                                  VerticalAlignment="Center"
+                                  Click="SuggestionCheckBox_Click"
+                                  Tag="{x:Bind Id}" />
+
+                        <StackPanel Grid.Column="1" Spacing="4">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <Border Background="{ThemeResource AccentFillColorDefaultBrush}"
+                                        CornerRadius="4"
+                                        Padding="8,2">
+                                    <TextBlock Text="{x:Bind local:AIAnalysisDialog.GetSuggestionTypeText(Type)}" 
+                                               FontSize="11"
+                                               Foreground="White" />
+                                </Border>
+                                <Border CornerRadius="4"
+                                        Padding="8,2"
+                                        Background="{x:Bind local:AIAnalysisDialog.GetPriorityBackground(Priority)}">
+                                    <TextBlock Text="{x:Bind local:AIAnalysisDialog.GetPriorityText(Priority)}" 
+                                               FontSize="11" />
+                                </Border>
+                            </StackPanel>
+                            
+                            <TextBlock Text="{x:Bind SourcePath}" 
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Opacity="0.7" />
+                            
+                            <TextBlock Text="{x:Bind Reason}" 
+                                       TextWrapping="Wrap"
+                                       Opacity="0.8" />
+                            
+                            <TextBlock Visibility="{x:Bind local:AIAnalysisDialog.HasDestination(DestinationPath)}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}">
+                                <Run Text="→ " />
+                                <Run Text="{x:Bind DestinationPath}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Footer Info -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="16" Margin="0,8,0,0">
+            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.5">
+                <Run Text="Token 使用: " />
+                <Run Text="{x:Bind Result.TokensUsed, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Opacity="0.5">
+                <Run Text="分析耗时: " />
+                <Run Text="{x:Bind Result.AnalysisDuration.TotalSeconds, Mode=OneWay}" />
+                <Run Text=" 秒" />
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</ContentDialog>

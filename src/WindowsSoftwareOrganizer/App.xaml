@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application
+    x:Class="WindowsSoftwareOrganizer.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WindowsSoftwareOrganizer"
+    xmlns:converters="using:WindowsSoftwareOrganizer.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:CategoryToDisplayNameConverter x:Key="CategoryToDisplayNameConverter" />
+            <converters:IconPathToImageConverter x:Key="IconPathToImageConverter" />
+            <converters:SizeToStringConverter x:Key="SizeConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="WindowsSoftwareOrganizer.Views.Dialogs.OpenAIConfigDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="OpenAI API 配置"
+    PrimaryButtonText="保存"
+    SecondaryButtonText="取消"
+    DefaultButton="Primary"
+    MinWidth="500">
+
+    <StackPanel Spacing="16">
+        <!-- API Key -->
+        <StackPanel Spacing="4">
+            <TextBlock Text="API Key" Style="{StaticResource BodyStrongTextBlockStyle}" />
+            <PasswordBox x:Name="ApiKeyBox"
+                         PlaceholderText="sk-..."
+                         Password="{x:Bind ApiKey, Mode=TwoWay}" />
+            <TextBlock Text="从 OpenAI 平台获取您的 API Key" 
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Opacity="0.6" />
+        </StackPanel>
+
+        <!-- Base URL -->
+        <StackPanel Spacing="4">
+            <TextBlock Text="API 地址 (可选)" Style="{StaticResource BodyStrongTextBlockStyle}" />
+            <TextBox x:Name="BaseUrlBox"
+                     PlaceholderText="https://api.openai.com/v1"
+                     Text="{x:Bind BaseUrl, Mode=TwoWay}" />
+            <TextBlock Text="如使用代理或兼容 API，请填写自定义地址" 
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Opacity="0.6" />
+        </StackPanel>
+
+        <!-- Model -->
+        <StackPanel Spacing="4">
+            <TextBlock Text="模型" Style="{StaticResource BodyStrongTextBlockStyle}" />
+            <ComboBox x:Name="ModelComboBox"
+                      SelectedItem="{x:Bind Model, Mode=TwoWay}"
+                      HorizontalAlignment="Stretch">
+                <x:String>gpt-4o</x:String>
+                <x:String>gpt-4o-mini</x:String>
+                <x:String>gpt-4-turbo</x:String>
+                <x:String>gpt-4</x:String>
+                <x:String>gpt-3.5-turbo</x:String>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Test Connection -->
+        <StackPanel Spacing="8">
+            <Button x:Name="TestButton" 
+                    Content="测试连接" 
+                    Click="TestConnection_Click"
+                    HorizontalAlignment="Left" />
+            
+            <StackPanel x:Name="TestResultPanel" 
+                        Orientation="Horizontal" 
+                        Spacing="8"
+                        Visibility="Collapsed">
+                <FontIcon x:Name="TestResultIcon" FontSize="16" />
+                <TextBlock x:Name="TestResultText" VerticalAlignment="Center" />
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</ContentDialog>
