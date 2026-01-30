@@ -1,11 +1,18 @@
 # 软迹 (Ruanji)
 
 <p align="center">
-  <img src="src/WindowsSoftwareOrganizer/Assets/AppIcon.png" alt="软迹" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/alanbulan/ruanji/main/src/WindowsSoftwareOrganizer/Assets/AppIcon.png" alt="软迹" width="128" height="128">
 </p>
 
 <p align="center">
   <strong>Windows 软件管理与迁移工具</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/alanbulan/ruanji/releases"><img src="https://img.shields.io/github/v/release/alanbulan/ruanji?style=flat-square&logo=github&label=Release" alt="Release"></a>
+  <a href="https://github.com/alanbulan/ruanji/blob/main/LICENSE"><img src="https://img.shields.io/github/license/alanbulan/ruanji?style=flat-square" alt="License"></a>
+  <a href="https://github.com/alanbulan/ruanji/stargazers"><img src="https://img.shields.io/github/stars/alanbulan/ruanji?style=flat-square&logo=github" alt="Stars"></a>
+  <a href="https://github.com/alanbulan/ruanji/issues"><img src="https://img.shields.io/github/issues/alanbulan/ruanji?style=flat-square" alt="Issues"></a>
 </p>
 
 <p align="center">
@@ -14,6 +21,24 @@
   <a href="#快速开始">快速开始</a> •
   <a href="#使用说明">使用说明</a> •
   <a href="#开发">开发</a>
+</p>
+
+---
+
+## 技术栈
+
+<p align="center">
+  <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 8">
+  <img src="https://img.shields.io/badge/C%23-12-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C# 12">
+  <img src="https://img.shields.io/badge/WinUI-3-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="WinUI 3">
+  <img src="https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Windows_App_SDK-1.5-00BCF2?style=flat-square&logo=windows&logoColor=white" alt="Windows App SDK">
+  <img src="https://img.shields.io/badge/MVVM-CommunityToolkit-68217A?style=flat-square&logo=nuget&logoColor=white" alt="MVVM">
+  <img src="https://img.shields.io/badge/DI-Microsoft.Extensions-512BD4?style=flat-square&logo=nuget&logoColor=white" alt="DI">
+  <img src="https://img.shields.io/badge/AI-OpenAI_Compatible-412991?style=flat-square&logo=openai&logoColor=white" alt="OpenAI">
 </p>
 
 ---
@@ -38,7 +63,13 @@
 - 文件浏览与搜索
 - 文件类型统计分析
 - 磁盘空间分析
-- AI 智能文件分析（需配置 OpenAI API）
+- AI 智能文件整理（支持 Function Calling）
+
+### 🤖 AI 助手
+- 独立窗口式 AI 对话界面
+- 支持多会话管理（新建、切换、删除、重命名）
+- 快捷操作面板
+- 支持 OpenAI、Azure、SiliconFlow 等兼容接口
 
 ### 🧹 系统清理
 - 扫描软件残留文件
@@ -46,7 +77,7 @@
 - 注册表残留检测
 
 ### ⚙️ 设置
-- OpenAI API 配置（支持多种兼容接口）
+- OpenAI API 配置
 - 动态加载可用模型列表
 - 界面主题设置
 
@@ -120,13 +151,13 @@ ruanji/
     └── WindowsSoftwareOrganizer.Tests/    # 单元测试
 ```
 
-## 技术栈
+## Star 历史
 
-- **UI 框架**: WinUI 3 (Windows App SDK 1.5)
-- **开发语言**: C# 12 / .NET 8
-- **架构模式**: MVVM
-- **依赖注入**: Microsoft.Extensions.DependencyInjection
-- **MVVM 工具**: CommunityToolkit.Mvvm
+<p align="center">
+  <a href="https://star-history.com/#alanbulan/ruanji&Date">
+    <img src="https://api.star-history.com/svg?repos=alanbulan/ruanji&type=Date" alt="Star History Chart" width="600">
+  </a>
+</p>
 
 ## 开发
 
@@ -148,9 +179,21 @@ dotnet publish -c Release -p:Platform=x64
 dotnet test
 ```
 
+## 版本历史
+
+查看 [CHANGELOG.md](CHANGELOG.md) 了解版本更新历史。
+
+### 最新版本: v0.1.0
+
+- 初始版本发布
+- 软件列表扫描与分类
+- 软件迁移功能
+- 文件管理与 AI 分析
+- 系统清理功能
+
 ## 许可证
 
-MIT License
+本项目采用 [MIT License](LICENSE) 开源协议。
 
 ## 贡献
 
