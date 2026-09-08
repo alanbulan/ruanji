@@ -1,206 +1,78 @@
-# 软迹 (Ruanji)
+<div align="center">
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/alanbulan/ruanji/main/src/WindowsSoftwareOrganizer/Assets/AppIcon.png" alt="软迹" width="128" height="128">
-</p>
+<img src="./src/WindowsSoftwareOrganizer/Assets/AppIcon.png" alt="软迹应用图标" width="88" height="88" />
 
-<p align="center">
-  <strong>Windows 软件管理与迁移工具</strong>
-</p>
+# 软迹 · Ruanji
 
-<p align="center">
-  <a href="https://github.com/alanbulan/ruanji/releases"><img src="https://img.shields.io/github/v/release/alanbulan/ruanji?style=flat-square&logo=github&label=Release" alt="Release"></a>
-  <a href="https://github.com/alanbulan/ruanji/blob/main/LICENSE"><img src="https://img.shields.io/github/license/alanbulan/ruanji?style=flat-square" alt="License"></a>
-  <a href="https://github.com/alanbulan/ruanji/stargazers"><img src="https://img.shields.io/github/stars/alanbulan/ruanji?style=flat-square&logo=github" alt="Stars"></a>
-  <a href="https://github.com/alanbulan/ruanji/issues"><img src="https://img.shields.io/github/issues/alanbulan/ruanji?style=flat-square" alt="Issues"></a>
-</p>
+整理已安装软件、查看文件，把迁移与管理操作放进一个桌面工作台。
 
-<p align="center">
-  <a href="#功能特性">功能特性</a> •
-  <a href="#安装要求">安装要求</a> •
-  <a href="#快速开始">快速开始</a> •
-  <a href="#使用说明">使用说明</a> •
-  <a href="#开发">开发</a>
-</p>
+[![Release](https://img.shields.io/github/v/release/alanbulan/ruanji?style=flat-square&color=818cf8)](https://github.com/alanbulan/ruanji/releases)
+![WinUI](https://img.shields.io/badge/UI-WinUI_3-5eead4?style=flat-square)
+![Runtime](https://img.shields.io/badge/Runtime-.NET_8-fb7185?style=flat-square)
 
----
+[功能特性](#功能特性) · [快速开始](#快速开始) · [工程结构](#工程结构) · [构建与操作验证](./BUILD_AND_SAFETY.md)
 
-## 技术栈
+</div>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" alt=".NET 8">
-  <img src="https://img.shields.io/badge/C%23-12-239120?style=for-the-badge&logo=csharp&logoColor=white" alt="C# 12">
-  <img src="https://img.shields.io/badge/WinUI-3-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="WinUI 3">
-  <img src="https://img.shields.io/badge/Windows-10%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows">
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Windows_App_SDK-1.5-00BCF2?style=flat-square&logo=windows&logoColor=white" alt="Windows App SDK">
-  <img src="https://img.shields.io/badge/MVVM-CommunityToolkit-68217A?style=flat-square&logo=nuget&logoColor=white" alt="MVVM">
-  <img src="https://img.shields.io/badge/DI-Microsoft.Extensions-512BD4?style=flat-square&logo=nuget&logoColor=white" alt="DI">
-  <img src="https://img.shields.io/badge/AI-OpenAI_Compatible-412991?style=flat-square&logo=openai&logoColor=white" alt="OpenAI">
-</p>
-
----
+软迹是使用 C#、WinUI 3 与 .NET 构建的 Windows 软件管理项目。界面采用 MVVM，核心模型、服务实现和桌面展示分层组织。迁移、卸载和清理可能修改真实文件与系统状态，使用前应做好备份并先验证可丢弃样例。
 
 ## 功能特性
 
-### 📋 软件列表
-- 自动扫描系统已安装软件
-- 智能分类（游戏、办公、开发工具等 50+ 类别）
-- 显示软件大小、版本、安装路径
-- 支持搜索和筛选
-- 软件图标自动提取
+| 软件管理 | 文件与迁移 | 可选 AI 能力 |
+| --- | --- | --- |
+| 扫描、搜索与分类 | 文件浏览、类型统计与空间分析 | 多会话对话与模型配置 |
+| 版本、大小与安装路径 | 迁移目标、命名和链接设置 | 文件分析及工具调用界面 |
+| 目录入口与管理操作 | 残留、临时文件和注册表相关操作 | 兼容接口的模型列表读取 |
 
-### 🚀 软件迁移
-- 将软件从 C 盘迁移到其他磁盘
-- 自动创建符号链接保持原路径可用
-- 支持自定义命名模板
-- 可选更新注册表引用
-- 文件完整性验证
-
-### 📁 文件管理
-- 文件浏览与搜索
-- 文件类型统计分析
-- 磁盘空间分析
-- AI 智能文件整理（支持 Function Calling）
-
-### 🤖 AI 助手
-- 独立窗口式 AI 对话界面
-- 支持多会话管理（新建、切换、删除、重命名）
-- 快捷操作面板
-- 支持 OpenAI、Azure、SiliconFlow 等兼容接口
-
-### 🧹 系统清理
-- 扫描软件残留文件
-- 清理临时文件
-- 注册表残留检测
-
-### ⚙️ 设置
-- OpenAI API 配置
-- 动态加载可用模型列表
-- 界面主题设置
-
-## 安装要求
-
-- Windows 10 版本 1903 (19041) 或更高版本
-- Windows 11
-- .NET 8.0 Runtime
-- Windows App SDK 1.5
+上表整理既有项目功能说明，不构成本轮运行验收。模型配置成功不等于文件分析可靠，软件迁移完成提示也应结合文件清单和原应用启动验证。
 
 ## 快速开始
 
-### 从源码构建
+从 [Releases](https://github.com/alanbulan/ruanji/releases) 查看实际存在的构件与说明；不把 README 中的历史手写版本号当作最新版。
 
-```bash
-# 克隆仓库
+源码构建使用 Windows、.NET 8 SDK 和适配 WinUI 的开发工具链：
+
+```powershell
 git clone https://github.com/alanbulan/ruanji.git
 cd ruanji
-
-# 构建项目
-dotnet build -p:Platform=x64
-
-# 运行应用
-.\src\WindowsSoftwareOrganizer\bin\x64\Debug\net8.0-windows10.0.19041.0\软迹.exe
+dotnet build .\src\WindowsSoftwareOrganizer\WindowsSoftwareOrganizer.csproj -p:Platform=x64
 ```
 
-### 发布版本
+以实际构建输出位置运行应用，不假设不同发布配置都会使用同一个 EXE 路径。发布前检查所选平台的发布配置，具体见 [BUILD_AND_SAFETY.md](./BUILD_AND_SAFETY.md)。
 
-```bash
-dotnet publish -c Release -p:Platform=x64
+### 安装要求的准确含义
+
+主 csproj 的编译目标为 `net8.0-windows10.0.19041.0`，最低平台声明为 `10.0.17763.0`；这两个值不是同一个概念，也不等于每个系统版本都完成了实机测试。原文“1903 (19041)”的混合描述不再使用。
+
+项目声明 x86、x64 和 ARM64，但具体可用安装包以发布资产为准。Windows App SDK 自包含设置与 .NET 运行时是否随包分发也需要分别核对。
+
+## 工程结构
+
+```mermaid
+flowchart LR
+  UI[WinUI Views / ViewModels] --> Core[Core 接口与模型]
+  Impl[Infrastructure 服务] --> Core
+  UI --> Impl
+  Impl --> Files[文件与系统接口]
+  Impl --> Model[可选模型服务]
 ```
 
-## 使用说明
+| 入口 | 职责 |
+| --- | --- |
+| [主应用](./src/WindowsSoftwareOrganizer) | WinUI 页面、视图模型与资源 |
+| [Core](./src/WindowsSoftwareOrganizer.Core) | 模型与接口 |
+| [Infrastructure](./src/WindowsSoftwareOrganizer.Infrastructure) | 文件、软件及外部服务实现 |
+| [tests](./tests) | 现有测试工程 |
+| [CHANGELOG.md](./CHANGELOG.md) | 项目变更记录 |
 
-### 软件列表
-1. 点击「扫描」按钮扫描系统已安装软件
-2. 使用搜索框筛选软件
-3. 使用类别下拉框按分类筛选
-4. 点击软件查看详情
-5. 可执行卸载、打开目录、迁移等操作
+## 使用与验证
 
-### 软件迁移
-1. 在软件列表中选择要迁移的软件
-2. 点击「迁移此软件」
-3. 在迁移页面设置目标路径
-4. 选择命名模板和链接类型
-5. 点击「开始迁移」
+首次使用只扫描并核对信息，不直接对系统目录批量清理。迁移需检查源/目标、同名文件、权限、链接、取消与恢复；涉及注册表或卸载应单独确认操作范围。AI 服务使用脱敏样例，不把私人文件内容发送给未经确认的供应商。
 
-### AI 文件分析
-1. 进入设置页面配置 OpenAI API
-2. 支持 OpenAI、Azure OpenAI、SiliconFlow 等兼容接口
-3. 点击「加载模型」获取可用模型列表
-4. 在文件管理页面使用 AI 分析功能
+构建、单元测试、桌面交互和真实迁移是四类不同验证；测试应使用临时目录，不能为了覆盖功能而卸载真实应用。详细的验证表和环境依据见 [构建与操作验证](./BUILD_AND_SAFETY.md)。
 
-## 项目结构
+本次静态核对了原 README 和主项目文件，仅修改文档；未运行 Windows 应用、更新依赖、编译安装包或操作用户磁盘。
 
-```
-ruanji/
-├── src/
-│   ├── WindowsSoftwareOrganizer/          # WinUI 3 主应用
-│   │   ├── Views/                         # 页面视图
-│   │   ├── ViewModels/                    # 视图模型
-│   │   ├── Converters/                    # 值转换器
-│   │   └── Helpers/                       # 辅助类
-│   ├── WindowsSoftwareOrganizer.Core/     # 核心业务逻辑
-│   │   ├── Interfaces/                    # 接口定义
-│   │   └── Models/                        # 数据模型
-│   └── WindowsSoftwareOrganizer.Infrastructure/  # 基础设施实现
-│       └── Services/                      # 服务实现
-└── tests/
-    └── WindowsSoftwareOrganizer.Tests/    # 单元测试
-```
+## 来源与贡献
 
-## Star 历史
-
-<p align="center">
-  <a href="https://star-history.com/#alanbulan/ruanji&Date">
-    <img src="https://api.star-history.com/svg?repos=alanbulan/ruanji&type=Date" alt="Star History Chart" width="600">
-  </a>
-</p>
-
-## 开发
-
-### 环境要求
-- Visual Studio 2022 17.8+ 或 VS Code
-- .NET 8.0 SDK
-- Windows App SDK 1.5 工作负载
-
-### 构建命令
-
-```bash
-# 调试构建
-dotnet build -p:Platform=x64
-
-# 发布构建
-dotnet publish -c Release -p:Platform=x64
-
-# 运行测试
-dotnet test
-```
-
-## 版本历史
-
-查看 [CHANGELOG.md](CHANGELOG.md) 了解版本更新历史。
-
-### 最新版本: v0.1.0
-
-- 初始版本发布
-- 软件列表扫描与分类
-- 软件迁移功能
-- 文件管理与 AI 分析
-- 系统清理功能
-
-## 许可证
-
-本项目采用 [MIT License](LICENSE) 开源协议。
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
----
-
-<p align="center">
-  Made with ❤️ for Windows users
-</p>
+保留现有 [LICENSE](./LICENSE) 和项目署名，不因文档改版重新授权。问题反馈和贡献使用本仓库 Issues/PR，提交脱敏的复现步骤、目标平台与相关日志即可。
